@@ -2,4 +2,4 @@ C implementations of popular algorithms for doing various tasks, ranging from so
 
 The list of algorithms implemented is:
 
-* Strassen's Matrix Multiplication
+* [Strassen's Matrix Multiplication](strassen_mat_mul/strassen_mat_mul.c)
