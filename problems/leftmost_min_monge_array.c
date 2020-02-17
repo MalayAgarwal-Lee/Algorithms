@@ -1,6 +1,6 @@
 #include <stdio.h>
-#define M 7
-#define N 5
+#define M 5
+#define N 4
 
 // Function prototype to take input
 void input(int a[][N], int*);
@@ -24,7 +24,7 @@ int main(int argc, char const *argv[])
 
     // Printing the result
     for (int i = 0; i < M; ++i)
-        printf("%d ", minimums[i]);
+        printf("%d ", array[i][minimums[i]]);
 
     return 0;
 }
