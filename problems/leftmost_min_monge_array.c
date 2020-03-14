@@ -1,6 +1,6 @@
 #include <stdio.h>
-#define M 5
-#define N 4
+#define M 7
+#define N 2
 
 // Function prototype to take input
 void input(int a[][N], int*);
