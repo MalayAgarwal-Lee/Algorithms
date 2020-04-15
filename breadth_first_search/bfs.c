@@ -109,31 +109,59 @@ int main(int argc, char const *argv[])
 
 void initialize_graph(GRAPH* G)
 {
+    /*
+    Function to get details from the user about the graph
+
+    Parameters:
+        G: GRAPH pointer, the graph to be initialized
+
+    Returns:
+        void
+    */
+
+    // Get the size of the graph and store in G.size
     printf("Enter the number of vertices in the graph: ");
     scanf("%d", &G->size);
 
+    // Allocate memory to G.vertices and G.adj arrays to store the
+    // vertices and the adjacency list respectively
+    // The type is NODE* and LIST* since G.vertices and G.adj
+    // as they will store NODE and LIST types respectively
     G->vertices = (NODE*)malloc(sizeof(struct node) * G->size);
     G->adj = (LIST*)malloc(sizeof(struct list) * G->size);
 
     printf("Please enter details about the graph. Each vertex is represented by an integer. Numbering starts at 0.\n");
 
+    // Get details about the vertices and their neighbors
+    // To initialize G.vertices and G.adj
     for (int i = 0; i < G->size; ++i)
     {
-
+        // Allocate memory to a new node
         NODE v = (NODE)malloc(sizeof(struct node));
+        // Set vertex attribute to i to indicate the vertex number
         v->vertex = i;
+        // Set distance from source to "infinity"
         v->distance = INT_MAX;
+        // Set color to WHITE to indicate unvisited
         v->color = 'W';
+        // Set predecessor to NULL to indicate no predecessor
         v->predecessor = NULL;
         v->next = NULL;
 
+        // Assign v to G.vertices[i] to store the vertex in the graph
         G->vertices[i] = v;
 
+        // Get the number of neighbors for the vertex
+        // And store in G.adj.size for that vertex
         printf("Enter the number of neighbors of vertex %d: ", i);
         scanf("%d", &G->adj[i].size);
 
+        // Allocate memory for array to store the neighbors
+        // Only the integer value of the neighbors is stored
         G->adj[i].neighbors = malloc(sizeof(int) * G->adj[i].size);
 
+        // Get integer value of all the neighbors of the vertex
+        // And store in G.adj.neighbors for that vertex
         printf("Enter the neighbors of vertex %d separating by space: ", i);
         for (int j = 0; j < G->adj[i].size; ++j)
             scanf("%d", &G->adj[i].neighbors[j]);
