@@ -313,7 +313,8 @@ void bfs(GRAPH* G, int source)
 
         // Breadth-first search proceeds by first processing all vertices at distance 1 from the source
         // Then distance 2, distance 3 and so on
-        // So, if we are at a vertex of distance x, we need to first access its neighbors since they will be at distance x + 1 and will be processed next
+        // So, if we are at a vertex of distance x
+        // We need to first access its neighbors since they will be at distance x + 1 and will be processed next
         for (int j = 0; j < G->adj[i].size; ++j)
         {
             // Get the neighbor's integer value from G.adj
@@ -333,7 +334,9 @@ void bfs(GRAPH* G, int source)
                 // Set the neighbor's predecessor as the node it was discovered from
                 v->predecessor = u;
 
-                // If we were at distance x, this vertex is at distance x + 1. Hence, it should be the one which is processed after all vertices at distance x are processed. Since insertion takes place at the rear of the queue, this behavior is ensured
+                // If we were at distance x, this vertex is at distance x + 1.
+                // Hence, it should be the one which is processed after all vertices at distance x are processed.
+                //Since insertion takes place at the rear of the queue, this behavior is ensured
                 enqueue(&q, v->vertex);
             }
         }
