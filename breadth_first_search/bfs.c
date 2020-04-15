@@ -124,8 +124,8 @@ void initialize_graph(GRAPH* G)
 
     // Allocate memory to G.vertices and G.adj arrays to store the
     // vertices and the adjacency list respectively
-    // The type is NODE* and LIST* since G.vertices and G.adj
-    // as they will store NODE and LIST types respectively
+    // The type is NODE* and LIST*
+    // As they will store NODE and LIST types respectively
     G->vertices = (NODE*)malloc(sizeof(struct node) * G->size);
     G->adj = (LIST*)malloc(sizeof(struct list) * G->size);
 
