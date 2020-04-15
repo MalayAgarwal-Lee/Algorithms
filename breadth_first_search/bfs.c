@@ -58,7 +58,7 @@ Structure for the graph
 Members:
     vertices: NODE* array, all the vertices in the graph
     adj: LIST* array, the adjacency list for the graph
-
+    size: int, the number of vertices in the array
 Pointers and not arrays are used since the graph can have arbitrary number of vertices
 */
 typedef struct graph
@@ -171,16 +171,33 @@ void initialize_graph(GRAPH* G)
 
 void print_adjlist(GRAPH* G)
 {
+    /*
+    Function to print the adjacency list
+
+    Parameters:
+        G: GRAPH pointer, the graph whose adjacency list needs to be printed
+
+    Output format:
+    0   ->1->4\
+    1   ->0->4->2->3\
+
+    Returns:
+        void
+    */
+
     printf("The list:\n");
     for (int i = 0; i < G->size; ++i)
     {
         printf("%d\t->", i);
 
+        // Get the number of neighbors for the vertex
         int size = G->adj[i].size;
-        for (int j = 0; j < size; ++j)
-            (j < size - 1)? printf("%d->", G->adj[i].neighbors[j]) : printf("%d\\", G->adj[i].neighbors[j]);
+        // Print each neighbor except the last one
+        for (int j = 0; j < size - 1; ++j)
+            printf("%d->", G->adj[i].neighbors[j]);
 
-        printf("\n");
+        // Print last neighbor separately since no "->" is needed after it
+        printf("%d\\\n", G->adj[i].neighbors[size - 1])
     }
 }
 
