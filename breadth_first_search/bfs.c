@@ -3,6 +3,17 @@
 #include <limits.h>
 #define MAX_VERTICES 8
 
+/*
+Structure for a vertex of the graph
+Members:
+    vertex: int, the vertex as an integer
+    distance: int, the distance from source to the vertex
+    color: char, 'W' for WHITE (unvisited)
+                 'B' for BLACK (all neighbors visited)
+                 'G' for GRAY (discovered/visited)
+    predecessor: node pointer, the predecessor of the vertex
+    next: node pointer, the next vertex in the lists
+*/
 struct node
 {
     int vertex;
@@ -11,9 +22,17 @@ struct node
     struct node* predecessor;
     struct node* next;
 };
+
+// Alias for creating pointer of the above structure
 typedef struct node *NODE;
 
 
+/*
+Structure for the list of neighbors for a vertex
+Members:
+    neighbors: int pointer, array to store all the neighbors
+    size: int, the number of neighbors of the vertex
+*/
 typedef struct list
 {
     int* neighbors;
@@ -21,6 +40,13 @@ typedef struct list
 }LIST;
 
 
+/*
+Structure for queue
+Members:
+    array: int array, the queue
+    front, read: int, pointers to the front and rear of the queue
+A linked list is not used since the queue will simply store integers
+*/
 typedef struct queue
 {
     int array[MAX_VERTICES];
@@ -29,6 +55,12 @@ typedef struct queue
 }QUEUE;
 
 
+/*
+Structure for the graph
+Members:
+    vertices: NODE array, all the vertices in the graph
+    adj: LIST array, the adjacency list for the graph
+*/
 typedef struct graph
 {
     NODE vertices[MAX_VERTICES];
@@ -36,10 +68,16 @@ typedef struct graph
 }GRAPH;
 
 
+// Function prototype to obtain graph details from user and store them in G
 void initialize_graph(GRAPH* G);
+// Function prototype to print the adjacency list of G
 void print_adjlist(GRAPH* G);
+
+// Function prototype of enqueue and dequeue to handle queue operations
 void enqueue(QUEUE* q, int i);
 int dequeue(QUEUE* q);
+
+// Function prototype to bread-first search graph G starting from vertex s
 void bfs(GRAPH* G, int source);
 
 
@@ -47,16 +85,20 @@ int main(int argc, char const *argv[])
 {
     GRAPH G;
 
+    // Initialize the graph
     initialize_graph(&G);
+    // Print the adjacency list
     print_adjlist(&G);
 
     printf("\n");
 
     int source;
 
+    // Get the source vertex
     printf("Enter the source: ");
     scanf("%d", &source);
 
+    // Call bfs() to start search
     bfs(&G, source);
 
     return 0;
@@ -112,9 +154,8 @@ void print_adjlist(GRAPH* G)
 void enqueue(QUEUE* q, int i)
 {
     if (q->front == -1 && q->rear == -1)
-        q->front = q->rear = 0;
-    else
-        q->rear++;
+        q->front = 0;
+    q->rear++;
     q->array[q->rear] = i;
 }
 
