@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#define MAX_VERTICES 8
+#define MAX_VERTICES 5
 
 struct node
 {
@@ -31,15 +31,15 @@ typedef struct queue
 
 typedef struct graph
 {
-    NODES vertices[MAX_VERTICES];
+    NODE vertices[MAX_VERTICES];
     LIST adj[MAX_VERTICES];
 }GRAPH;
 
 
 void initialize_graph(GRAPH* G);
 void print_adjlist(GRAPH* G);
-void enqueue(QUEUE* q, NODE n);
-NODE dequeue(QUEUE* q);
+void enqueue(QUEUE* q, int i);
+int dequeue(QUEUE* q);
 void bfs(GRAPH* G, int source);
 
 
@@ -55,7 +55,7 @@ int main(int argc, char const *argv[])
     printf("Enter the source: ");
     scanf("%d", &source);
 
-    bfs(&G, source);
+    // bfs(&G, source);
 
     return 0;
 }
@@ -77,10 +77,10 @@ void initialize_graph(GRAPH* G)
 
         G->vertices[i] = v;
 
-        printf("Enter the number of neighbors of vertex %d: ");
+        printf("Enter the number of neighbors of vertex %d: ", i);
         scanf("%d", &G->adj[i].size);
 
-        G->adj[i].neighbors = malloc(sizeof * G->adj[i].size);
+        G->adj[i].neighbors = malloc(sizeof(int) * G->adj[i].size);
 
         printf("Enter the neighbors of vertex %d separating by space: ", i);
         for (int j = 0; j < G->adj[i].size; ++j)
@@ -96,6 +96,8 @@ void print_adjlist(GRAPH* G)
     printf("The list:\n");
     for (int i = 0; i < MAX_VERTICES; ++i)
     {
+        printf("%d\t->", i);
+
         int size = G->adj[i].size;
         for (int j = 0; j < size; ++j)
             (j < size - 1)? printf("%d->", G->adj[i].neighbors[j]) : printf("%d\\", G->adj[i].neighbors[j]);
@@ -105,22 +107,22 @@ void print_adjlist(GRAPH* G)
 }
 
 
-void enqueue(QUEUE* q, NODE n)
+void enqueue(QUEUE* q, int i)
 {
     if (q->front == -1 && q->rear == -1)
         q->front = q->rear = 0;
     else
         q->rear++;
-    q->array[q->rear] = n;
+    q->array[q->rear] = i;
 }
 
 
-NODE dequeue(QUEUE* q)
+int dequeue(QUEUE* q)
 {
     if (q->front == -1 && q->rear == -1)
-        return NULL;
+        return -1;
 
-    NODE elem = q->array[q->front];
+    int elem = q->array[q->front];
     q->front++;
 
     if (q->front > q->rear)
@@ -130,34 +132,34 @@ NODE dequeue(QUEUE* q)
 }
 
 
-void bfs(GRAPH* G, int source)
-{
-    NODE u = G->adj[source].head;
-    u->color = 'G';
-    u->distance = 0;
+// void bfs(GRAPH* G, int source)
+// {
+//     NODE u = G->adj[source].head;
+//     u->color = 'G';
+//     u->distance = 0;
 
-    QUEUE q;
+//     QUEUE q;
 
-    enqueue(&q, u);
+//     enqueue(&q, u);
 
-    while ((u = dequeue(&q)) != NULL)
-    {
-        NODE v = G->adj[u->vertex].head;
-        while ((v = v->next) != NULL)
-        {
-            if (v->color == 'W')
-            {
-                v->color = 'G';
-                v->distance = u->distance + 1;
-                v->predecessor = u;
-                enqueue(&q, v);
-            }
-        }
+//     while ((u = dequeue(&q)) != NULL)
+//     {
+//         NODE v = G->adj[u->vertex].head;
+//         while ((v = v->next) != NULL)
+//         {
+//             if (v->color == 'W')
+//             {
+//                 v->color = 'G';
+//                 v->distance = u->distance + 1;
+//                 v->predecessor = u;
+//                 enqueue(&q, v);
+//             }
+//         }
 
-        u->color = 'B';
-        printf("%d ", u->vertex);
-    }
-}
+//         u->color = 'B';
+//         printf("%d ", u->vertex);
+//     }
+// }
 
 
 
