@@ -57,8 +57,10 @@ typedef struct queue
 /*
 Structure for the graph
 Members:
-    vertices: NODE array, all the vertices in the graph
-    adj: LIST array, the adjacency list for the graph
+    vertices: NODE* array, all the vertices in the graph
+    adj: LIST* array, the adjacency list for the graph
+
+Pointers and not arrays are used since the graph can have arbitrary number of vertices
 */
 typedef struct graph
 {
