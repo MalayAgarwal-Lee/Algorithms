@@ -350,8 +350,3 @@ void bfs(GRAPH* G, int source)
         printf("%d at level %d\n", u->vertex, u->distance);
     }
 }
-
-
-
-
-
