@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#define MAX_VERTICES 5
+#define MAX_VERTICES 8
 
 struct node
 {
@@ -50,12 +50,14 @@ int main(int argc, char const *argv[])
     initialize_graph(&G);
     print_adjlist(&G);
 
+    printf("\n");
+
     int source;
 
     printf("Enter the source: ");
     scanf("%d", &source);
 
-    // bfs(&G, source);
+    bfs(&G, source);
 
     return 0;
 }
@@ -132,34 +134,40 @@ int dequeue(QUEUE* q)
 }
 
 
-// void bfs(GRAPH* G, int source)
-// {
-//     NODE u = G->adj[source].head;
-//     u->color = 'G';
-//     u->distance = 0;
+void bfs(GRAPH* G, int source)
+{
+    NODE u = G->vertices[source];
+    u->color = 'G';
+    u->distance = 0;
 
-//     QUEUE q;
+    int i = u->vertex;
 
-//     enqueue(&q, u);
+    QUEUE q;
+    q.front = q.rear = -1;
 
-//     while ((u = dequeue(&q)) != NULL)
-//     {
-//         NODE v = G->adj[u->vertex].head;
-//         while ((v = v->next) != NULL)
-//         {
-//             if (v->color == 'W')
-//             {
-//                 v->color = 'G';
-//                 v->distance = u->distance + 1;
-//                 v->predecessor = u;
-//                 enqueue(&q, v);
-//             }
-//         }
+    enqueue(&q, i);
 
-//         u->color = 'B';
-//         printf("%d ", u->vertex);
-//     }
-// }
+    while ((i = dequeue(&q)) != -1)
+    {
+        u = G->vertices[i];
+
+        for (int j = 0; j < G->adj[i].size; ++j)
+        {
+            int neighbor = G->adj[i].neighbors[j];
+            NODE v = G->vertices[neighbor];
+            if (v->color == 'W')
+            {
+                v->color = 'G';
+                v->distance = u->distance + 1;
+                v->predecessor = u;
+                enqueue(&q, v->vertex);
+            }
+        }
+
+        u->color = 'B';
+        printf("%d at level %d\n", u->vertex, u->distance);
+    }
+}
 
 
 
