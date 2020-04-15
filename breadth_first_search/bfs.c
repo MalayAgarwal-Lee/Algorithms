@@ -19,7 +19,6 @@ struct node
     int distance;
     char color;
     struct node* predecessor;
-    struct node* next;
 };
 
 // Alias for creating pointer of the above structure
@@ -146,7 +145,6 @@ void initialize_graph(GRAPH* G)
         v->color = 'W';
         // Set predecessor to NULL to indicate no predecessor
         v->predecessor = NULL;
-        v->next = NULL;
 
         // Assign v to G.vertices[i] to store the vertex in the graph
         G->vertices[i] = v;
