@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#define MAX_VERTICES 8
 
 /*
 Structure for a vertex of the graph
@@ -49,7 +48,7 @@ A linked list is not used since the queue will simply store integers
 */
 typedef struct queue
 {
-    int array[MAX_VERTICES];
+    int* array;
     int front;
     int rear;
 }QUEUE;
@@ -63,8 +62,9 @@ Members:
 */
 typedef struct graph
 {
-    NODE vertices[MAX_VERTICES];
-    LIST adj[MAX_VERTICES];
+    NODE* vertices;
+    LIST* adj;
+    int size;
 }GRAPH;
 
 
@@ -107,9 +107,15 @@ int main(int argc, char const *argv[])
 
 void initialize_graph(GRAPH* G)
 {
+    printf("Enter the number of vertices in the graph: ");
+    scanf("%d", &G->size);
+
+    G->vertices = (NODE*)malloc(sizeof(struct node) * G->size);
+    G->adj = (LIST*)malloc(sizeof(struct list) * G->size);
+
     printf("Please enter details about the graph. Each vertex is represented by an integer. Numbering starts at 0.\n");
 
-    for (int i = 0; i < MAX_VERTICES; ++i)
+    for (int i = 0; i < G->size; ++i)
     {
 
         NODE v = (NODE)malloc(sizeof(struct node));
@@ -138,7 +144,7 @@ void initialize_graph(GRAPH* G)
 void print_adjlist(GRAPH* G)
 {
     printf("The list:\n");
-    for (int i = 0; i < MAX_VERTICES; ++i)
+    for (int i = 0; i < G->size; ++i)
     {
         printf("%d\t->", i);
 
@@ -184,6 +190,7 @@ void bfs(GRAPH* G, int source)
     int i = u->vertex;
 
     QUEUE q;
+    q.array = malloc(sizeof(int) * G->size);
     q.front = q.rear = -1;
 
     enqueue(&q, i);
