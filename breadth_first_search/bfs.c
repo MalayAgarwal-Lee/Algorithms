@@ -58,7 +58,7 @@ Structure for the graph
 Members:
     vertices: NODE* array, all the vertices in the graph
     adj: LIST* array, the adjacency list for the graph
-    size: int, the number of vertices in the array
+    size: int, the number of vertices in the graph
 Pointers and not arrays are used since the graph can have arbitrary number of vertices
 */
 typedef struct graph
@@ -109,7 +109,7 @@ int main(int argc, char const *argv[])
 void initialize_graph(GRAPH* G)
 {
     /*
-    Function to get details from the user about the graph
+    Function to get details from the user about the graph, G
 
     Parameters:
         G: GRAPH pointer, the graph to be initialized
@@ -172,7 +172,7 @@ void initialize_graph(GRAPH* G)
 void print_adjlist(GRAPH* G)
 {
     /*
-    Function to print the adjacency list
+    Function to print the adjacency list of graph, G
 
     Parameters:
         G: GRAPH pointer, the graph whose adjacency list needs to be printed
@@ -204,24 +204,62 @@ void print_adjlist(GRAPH* G)
 
 void enqueue(QUEUE* q, int i)
 {
+    /*
+    Function to add the element, i, to the queue, q
+
+    Parameters:
+        q: QUEUE pointer, the queue to which the element is to be added
+        i: int, the element to be added
+
+    Returns:
+        void
+    */
+
+    //NOTE: No overflow is checked because that will not occur in this context
+
+    // Check if the queue is empty
+    // If it is, then front needs to be set to 0
+    // The first index of the array used as queue
     if (q->front == -1 && q->rear == -1)
         q->front = 0;
+
+    // rear can be incremented irrespective of whether queue is empty or note
     q->rear++;
+
+    // Assign i to the new rear of the queue
     q->array[q->rear] = i;
 }
 
 
 int dequeue(QUEUE* q)
 {
+    /*
+    Function to remove the element at the front of the queue
+
+    Parameters:
+        q: QUEUE pointer, the queue from which the element is to be removed
+
+    Returns:
+        int, the element that was removed
+    */
+
+    // If the queue is empty, return -1 indicating underflow
     if (q->front == -1 && q->rear == -1)
         return -1;
 
+    // Get the element to be removed
     int elem = q->array[q->front];
+
+    // Change the front to go to the next index
+    // So that size of queue is reduced
     q->front++;
 
+    // If the removal makes the queue empty
+    // Set front and rear to -1 to indicate that
     if (q->front > q->rear)
         q->front = q->rear = -1;
 
+    // Return the removed element
     return elem;
 }
 
