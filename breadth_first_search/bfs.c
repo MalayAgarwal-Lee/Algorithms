@@ -11,7 +11,6 @@ Members:
                  'B' for BLACK (all neighbors visited)
                  'G' for GRAY (discovered/visited)
     predecessor: node pointer, the predecessor of the vertex
-    next: node pointer, the next vertex in the lists
 */
 struct node
 {
