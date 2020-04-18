@@ -198,7 +198,7 @@ void print_adjlist(GRAPH* G)
             printf("%d->", G->adj[i].neighbors[j]);
 
         // Print last neighbor separately since no "->" is needed after it
-        printf("%d\\\n", G->adj[i].neighbors[size - 1])
+        printf("%d\\\n", G->adj[i].neighbors[size - 1]);
     }
 }
 
