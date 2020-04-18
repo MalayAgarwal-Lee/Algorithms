@@ -5,3 +5,4 @@ The list of algorithms implemented is:
 * [Strassen's Matrix Multiplication](strassen_mat_mul/strassen_mat_mul.c)
 * [Counting Sort](counting_sort/counting_sort.c)
 * [Breadth First Search (Using Adjacency List)](breadth_first_search/bfs.c)
+* [Depth First Search (Using Adjacency List)](depth_first_search/dfs.c)
