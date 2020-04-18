@@ -6,10 +6,11 @@
 Structure for a vertex of the graph
 Members:
     vertex: int, the vertex as an integer
-    distance: int, the distance from source to the vertex
+    discovery: int, the discovery time of the vertex
+    finish: int, the finish time of the vertex
     color: char, 'W' for WHITE (unvisited)
-                 'B' for BLACK (all neighbors visited)
-                 'G' for GRAY (discovered/visited)
+                 'B' for BLACK (finish time set/finished)
+                 'G' for GRAY (discovery time set/discovered)
     predecessor: node pointer, the predecessor of the vertex
 */
 struct node
@@ -44,6 +45,7 @@ Members:
     vertices: NODE* array, all the vertices in the graph
     adj: LIST* array, the adjacency list for the graph
     size: int, the number of vertices in the graph
+    time: int, the global timer for discovery and finish times of the vertices
 Pointers and not arrays are used since the graph can have arbitrary number of vertices
 */
 typedef struct graph
@@ -60,6 +62,7 @@ void initialize_graph(GRAPH* G);
 // Function prototype to print the adjacency list of G
 void print_adjlist(GRAPH* G);
 
+// Function prototypes to depth-first search the graph, G
 void dfs(GRAPH* G);
 void dfs_visit(GRAPH* G, int i);
 
@@ -68,12 +71,15 @@ int main(int argc, char const *argv[])
 {
     GRAPH G;
 
+    // Initialize the graph
     initialize_graph(&G);
 
+    // Print the adjacency list
     print_adjlist(&G);
 
     printf("\n");
 
+    // Call dfs() to start search
     dfs(&G);
 
     return 0;
@@ -178,14 +184,41 @@ void print_adjlist(GRAPH* G)
 
 void dfs(GRAPH* G)
 {
+    /*
+    Function which creates the depth-first forest for graph, G
+    It finds all vertices which are roots in the trees of the depth-first forest
+    And calls dfs_visit() for each root to find all the nodes in that tree
+
+    The DFS algorithm can be looked at here:
+    https://en.wikipedia.org/wiki/Depth-first_search
+
+    Parameters:
+        G: GRAPH pointer, the graph which needs to be searched
+
+    Returns:
+        void
+    */
+
+    // Set the global graph timer to 0
+    // This will be used to compute the discovery and finish times
     G->time = 0;
 
+    // Loop over the vertices in the graph
     for (int i = 0; i < G->size; ++i)
     {
+        // Let u be the current vertex represented by i
+        // If u is a node (or root) in another tree of the depth-first forest
+        // It cannot be the root of a new tree
+        // And will be marked BLACK some previous call to dfs_visit()
+        // Hence, only WHITE-colored vertices can be roots
         if (G->vertices[i]->color == 'W')
         {
+            // Print the root to demarcate different roots
             printf("Depth-first tree rooted at vertex %d:\n", i);
+
+            // Call dfs_visit() to discover the nodes of the tree rooted at u
             dfs_visit(G, G->vertices[i]->vertex);
+
             printf("\n");
         }
     }
@@ -194,18 +227,48 @@ void dfs(GRAPH* G)
 
 void dfs_visit(GRAPH* G, int i)
 {
+    /*
+    Function which recursively finds all the nodes in the tree rooted at vertex, i
+    In the depth-first forest of graph, G
+    And computes their discovery and finishing times
+
+    Parameters:
+        G: GRAPH pointer, the graph to be searched
+        i: int, the root vertex of the tree whose nodes are to be found
+
+    Returns:
+        void
+    */
+
+    // Get the node represented by i
     NODE u = G->vertices[i];
 
+    // Increment the global graph timer
+    // And assign its value to u.discovery
     G->time += 1;
-
     u->discovery = G->time;
+
+    // Set the color to GRAY to indicate that it has been discovered
+    // But all its neighbors haven't been discovered
     u->color = 'G';
 
+    // Loop over the adjacency list of u
     for (int j = 0; j < G->adj[i].size; ++j)
     {
+        // Get the vertex stored in the current entry of the adjacency list
         int neighbor = G->adj[i].neighbors[j];
         NODE v = G->vertices[neighbor];
 
+        /*
+        In depth-first search, we finish all nodes at the deepest level first
+        Then the next deepest level and so on
+        So, if u is the  current vertex and the length of the maximum path from u
+        To a vertex is x, then this vertex will finish first
+        Then vertices at depth x - 1, x - 2 and so on
+        Hence, we go "deeper" into the graph by recursively calling dfs_visit()
+        WHITE-colored neighbors of u only since non-white vertices have already finished
+        Equivalent to finding all the nodes in the subtree rooted at v of the tree rooted at u
+        */
         if (v->color == 'W')
         {
             v->predecessor = u;
@@ -213,9 +276,15 @@ void dfs_visit(GRAPH* G, int i)
         }
     }
 
+    // Once we have discovered all nodes which are deeper than u, we can finish it
+    // Hence, mark color as BLACK
+    // Increment global timer and assign to u.finish
     u->color = 'B';
     G->time += 1;
     u->finish = G->time;
 
+    // Print the vertex with its discovery and finish times
+    // Due to the nature of DFS, the deepest vertex will be printed first
+    // That is, the vertices are printed in increasing order of finishing time
     printf("Vertex %d discovered at %d and finished at %d\n", u->vertex, u->discovery, u->finish);
 }
