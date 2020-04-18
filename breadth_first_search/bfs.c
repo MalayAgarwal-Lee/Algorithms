@@ -41,7 +41,7 @@ typedef struct list
 Structure for queue
 Members:
     array: int array, the queue
-    front, read: int, pointers to the front and rear of the queue
+    front, rear: int, pointers to the front and rear of the queue
 A linked list is not used since the queue will simply store integers
 */
 typedef struct queue
