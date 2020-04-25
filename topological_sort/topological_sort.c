@@ -6,8 +6,7 @@ Structure for a vertex of the graph
 Members:
     vertex: int, the vertex as an integer
     color: char, 'W' for WHITE (unvisited)
-                 'B' for BLACK (finish time set/finished)
-                 'G' for GRAY (discovery time set/discovered)
+                 'B' for BLACK (visited)
 */
 struct node
 {
@@ -160,8 +159,6 @@ void topological_visit(GRAPH* G, int i)
 {
 
     NODE u = G->vertices[i];
-
-    u->color = 'G';
 
     for (int j = 0; j < G->adj[i].size; ++j)
     {
