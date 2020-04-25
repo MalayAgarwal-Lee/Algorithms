@@ -5,8 +5,8 @@
 Structure for a vertex of the graph
 Members:
     vertex: int, the vertex as an integer
-    color: char, 'W' for WHITE (unvisited)
-                 'B' for BLACK (visited)
+    color: char, 'W' for WHITE (unplaced)
+                 'B' for BLACK (placed)
 */
 struct node
 {
@@ -102,12 +102,6 @@ void initialize_graph(GRAPH* G)
     G->vertices = (NODE*)malloc(sizeof(struct node) * G->size);
     G->adj = (LIST*)malloc(sizeof(struct list) * G->size);
 
-    // Allocate memory to G.topological
-    // To store the vertices topologically sorted
-    G->topological = (int*)malloc(sizeof(int) * G->size);
-
-    // Set G.index to the last index in the array
-    G->index = G->size - 1;
 
     printf("Please enter details about the graph. Each vertex is represented by an integer. Numbering starts at 0.\n");
 
@@ -192,12 +186,67 @@ void print_adjlist(GRAPH* G)
 
 void topological_sort(GRAPH* G)
 {
+    /*
+    Function which topologically sorts the graph, G
+    And prints the vertices of the graph in that order
+
+    The Topological Sort algorithm can be looked at here:
+    https://en.wikipedia.org/wiki/Topological_sorting
+
+    ==========================================================================
+    In topological sort, if there is an edge in the graph (u, v)
+    Then, u must precede v in the sorted order
+    This ordering can be correctly found by using the finishing times
+    Computed in a DFS
+    In DFS, if there is an edge (u, v), then u.finish > v.finish
+    If a vertex is added to the front of a list L as soon as it finishes,
+    And l[i] = u, l[j] = v, we will have i < j or in other words,
+    u will be placed before v in the sort
+
+    Hence, the DFS strategy is followed
+    The discovery and finish times are removed since they are irrelevant
+    Instead of using a linked list, an integer array is used to store the order
+    Since storing the actual vertices is not important
+
+    NOTE: The topological order depends on how the adjacency list is organized
+    ==========================================================================
+
+    Parameters:
+        G: GRAPH pointer, the graph to be sorted
+
+    Returns:
+        void
+    */
+
+    // Allocate memory to G.topological
+    // To store the vertices in topologically sorted order
+    G->topological = (int*)malloc(sizeof(int) * G->size);
+
+    // Vertices are added to the front of the list as they finish
+    // In terms of an array, it means we need to start at the end
+    // Hence, set G.size to one less than the number of vertices in the graph
+    G->index = G->size - 1;
+
+    // Loop over the vertices in the graph
     for (int i = 0; i < G->size; ++i)
     {
+        /*
+        Let u be the current vertex
+        As there is an edge from u to its neighbors
+        u will precede all of them in the sorted array
+        Since we are starting from the end of the array
+        These neighbors need to be placed first, followed by u
+        Thus, call topological_sort() on u to discover and place all its neighbors
+        If there is an edge from some other vertex x to u
+        And x comes before u in the adjacency list
+        u must have been marked BLACK by a previous call to topological_visit()
+        Thus, only WHITE-colored vertices are considered as they haven't been placed
+        */
         if (G->vertices[i]->color == 'W')
             topological_visit(G, G->vertices[i]->vertex);
     }
 
+    // Print the vertices in topologically sorted order
     printf("The vertices of the graph topologically sorted are: ");
 
     for (int i = 0; i < G->size; ++i)
@@ -209,20 +258,44 @@ void topological_sort(GRAPH* G)
 
 void topological_visit(GRAPH* G, int i)
 {
+    /*
+    Function which recursively discovers and places all the neighbors of vertex, i
+    And then places i in the topologically sorted order
 
+    Parameters:
+        G: GRAPH pointer, the graph to be sorted
+        i: int, the vertex whose neighbors are to be placed
+    */
+
+    // Get the node represented by i
     NODE u = G->vertices[i];
 
+    // Loop over the adjacency list of u
     for (int j = 0; j < G->adj[i].size; ++j)
     {
+        // Get the vertex stored in the current entry of the adjacency list
         int neighbor = G->adj[i].neighbors[j];
         NODE v = G->vertices[neighbor];
 
+        /*
+        Similar to topological_sort(), since v has edges to all its neighbors
+        It will precede them in the topological sort
+        Thus, place them before placing v
+        This neighbor may have had an incoming edge from some other vertex
+        Which came before u in the adjacency list and hence, may have already been placed
+        Thus, only WHITE-colored vertices are considered
+        */
         if (v->color == 'W')
             topological_visit(G, v->vertex);
     }
 
+    // Once all neighbors of u are placed, we can place u
+    // Hence, mark u as BLACK
     u->color = 'B';
 
+    // Add u to G.topological at G.index
+    // Previous calls to the function ensure that G.index is the correct index
     G->topological[G->index] = u->vertex;
+    // Decrement G.index to point to the next empty space in G.topological
     G->index--;
 }
