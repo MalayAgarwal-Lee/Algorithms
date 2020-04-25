@@ -6,3 +6,4 @@ The list of algorithms implemented is:
 * [Counting Sort](counting_sort/counting_sort.c)
 * [Breadth First Search (Using Adjacency List)](breadth_first_search/bfs.c)
 * [Depth First Search (Using Adjacency List)](depth_first_search/dfs.c)
+* [Topological Sort](topological_sort/topological_sort.c)
